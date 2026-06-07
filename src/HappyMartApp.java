@@ -33,7 +33,7 @@ public class HappyMartApp extends JFrame {
     private JButton    deleteBtn;
     private JButton    updateBtn;
     private JButton    clearBtn;
-    private JButton    signOutBtn;
+//    private JButton    signOutBtn;
 
     // ─── Table ────────────────────────────────────────────────────────────────
     private JTable         productTable;
@@ -167,11 +167,11 @@ public class HappyMartApp extends JFrame {
         deleteBtn  = createSmallButton("Delete");
         updateBtn  = createSmallButton("Update");
         clearBtn   = createSmallButton("Clear");
-        signOutBtn = createSmallButton("Sign Out");
+//        signOutBtn = createSmallButton("Sign Out");
         deleteBtn.addActionListener(e -> deleteProduct());
         updateBtn.addActionListener(e -> updateProduct());
         clearBtn.addActionListener(e -> clearForm());
-        signOutBtn.addActionListener(e -> signOut());
+//        signOutBtn.addActionListener(e -> signOut());
 
         JPanel actionRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
         actionRow.setBackground(Color.WHITE);
@@ -179,7 +179,7 @@ public class HappyMartApp extends JFrame {
         actionRow.add(deleteBtn);
         actionRow.add(updateBtn);
         actionRow.add(clearBtn);
-        actionRow.add(signOutBtn);
+//        actionRow.add(signOutBtn);
 
         // ── Assemble ──
         panel.add(imagePreviewLabel);
@@ -526,10 +526,10 @@ public class HappyMartApp extends JFrame {
         setFieldValue(priceField,  "Enter the price",       String.valueOf(found.getPrice()));
     }
 
-    private void signOut() {
-        dispose();
-        new SignInScreen();
-    }
+//    private void signOut() {
+//        dispose();
+//        new SignInScreen();
+//    }
 
     // ═════════════════════════════════════════════════════════════════════════
     //  DIALOGS

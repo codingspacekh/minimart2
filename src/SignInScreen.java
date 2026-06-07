@@ -8,7 +8,6 @@ import java.awt.event.*;
 
 public class SignInScreen extends JFrame {
 
-    // ─── Fonts ───────────────────────────────────────────────────────────────
     private static final Font TITLE_FONT  = new Font("SansSerif", Font.BOLD, 22);
     private static final Font HEADING_FONT = new Font("SansSerif", Font.BOLD, 16);
     private static final Font LABEL_FONT  = new Font("SansSerif", Font.PLAIN, 13);
@@ -16,7 +15,6 @@ public class SignInScreen extends JFrame {
 
     private final UserDAO userDAO = new UserDAO();
 
-    // ─── Form components ─────────────────────────────────────────────────────
     private JTextField userIdField;
     private JTextField nameField;
     private JLabel     errorLabel;
@@ -35,9 +33,6 @@ public class SignInScreen extends JFrame {
         setVisible(true);
     }
 
-    // ═════════════════════════════════════════════════════════════════════════
-    //  CARD
-    // ═════════════════════════════════════════════════════════════════════════
     private JPanel buildCard() {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
@@ -125,39 +120,8 @@ public class SignInScreen extends JFrame {
         return s;
     }
 
-    // ═════════════════════════════════════════════════════════════════════════
-    //  SIGN IN LOGIC
-    // ═════════════════════════════════════════════════════════════════════════
-    private void attemptSignIn() {
-        errorLabel.setText(" ");
 
-        String userId = getFieldValue(userIdField, "Enter your user ID");
-        String name   = getFieldValue(nameField,   "Enter your name");
 
-        if (userId.isEmpty() || name.isEmpty()) {
-            errorLabel.setText("Please fill in all fields.");
-            return;
-        }
-
-        User user = userDAO.findUser(userId, name);
-
-        if (user == null) {
-            errorLabel.setText("Invalid user ID or name.");
-            return;
-        }
-
-        if (!"admin".equals(user.getRole())) {
-            errorLabel.setText("Access denied. Admin accounts only.");
-            return;
-        }
-
-        dispose();
-        new HappyMartApp();
-    }
-
-    // ═════════════════════════════════════════════════════════════════════════
-    //  HELPERS
-    // ═════════════════════════════════════════════════════════════════════════
     private JTextField createField(String placeholder) {
         JTextField tf = new JTextField(placeholder);
         tf.setFont(LABEL_FONT);
@@ -216,9 +180,12 @@ public class SignInScreen extends JFrame {
         return btn;
     }
 
-    // ═════════════════════════════════════════════════════════════════════════
-    //  ENTRY POINT
-    // ═════════════════════════════════════════════════════════════════════════
+    // TODO
+    private void attemptSignIn() {
+        dispose();
+        new HappyMartApp();
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(SignInScreen::new);
     }
