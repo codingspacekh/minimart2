@@ -32,14 +32,49 @@ public class DatabaseConnection {
             );
         """;
 
+        String createUsers = """
+            CREATE TABLE IF NOT EXISTS users (
+                user_id TEXT PRIMARY KEY,
+                name    TEXT NOT NULL,
+                role    TEXT NOT NULL DEFAULT 'cashier'
+            );
+        """;
+
+
         String createSeq = "CREATE TABLE IF NOT EXISTS product_code_seq (last_num INTEGER NOT NULL DEFAULT 0);";
         String seedSeq   = "INSERT INTO product_code_seq (last_num) SELECT COUNT(*) FROM products WHERE NOT EXISTS (SELECT 1 FROM product_code_seq);";
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(createProducts);
-//            stmt.execute(createUsers);
+            stmt.execute(createUsers);
+
             stmt.execute(createSeq);
             stmt.execute(seedSeq);
             System.out.println("Database tables ready.");
+        }
+
+        seedUsers(conn);
+    }
+
+    private static void seedUsers(Connection conn) throws SQLException {
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM users")){
+            if (rs.next() && rs.getInt(1) > 0) return;
+        }
+        String[][] users = {
+                {"ADM001", "Admin", "admin"},
+                {"CSH001", "joe", "cashier"},
+                {"CSH002", "jane", "cashier"}
+        };
+        String sql = "INSERT INTO users (user_id, name, role) VALUES (?, ?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            for (String[] u: users) {
+                pstmt.setString(1, u[0]);
+                pstmt.setString(2, u[1]);
+                pstmt.setString(3, u[2]);
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();
+            System.out.println("Users created.");
         }
 
     }

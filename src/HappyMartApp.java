@@ -527,7 +527,8 @@ public class HappyMartApp extends JFrame {
     }
 
     private void signOut() {
-
+        dispose();
+        new SignInScreen();
     }
 
     // ═════════════════════════════════════════════════════════════════════════
