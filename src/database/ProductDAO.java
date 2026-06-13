@@ -77,6 +77,41 @@ public class ProductDAO {
         return null;
     }
 
+    // ─── READ ONE BY CODE ──────────────────────────────────────────────────────
+    public Product getProductByCode(String code) {
+        String sql = "SELECT id, code, name, amount, price, thumbnail FROM products WHERE code = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, code);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new Product(
+                    rs.getInt("id"),
+                    rs.getString("code"),
+                    rs.getString("name"),
+                    rs.getInt("amount"),
+                    rs.getDouble("price"),
+                    rs.getBytes("thumbnail")
+                );
+            }
+        } catch (SQLException e) {
+            System.err.println("Fetch by code error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    // ─── DECREASE STOCK ────────────────────────────────────────────────────────
+    public boolean decreaseStock(String code, int quantity, Connection conn) throws SQLException {
+        String sql = "UPDATE products SET amount = amount - ? WHERE code = ? AND amount >= ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, quantity);
+            pstmt.setString(2, code);
+            pstmt.setInt(3, quantity);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
     // ─── UPDATE ────────────────────────────────────────────────────────────────
     public boolean updateProduct(Product product) {
         String sql = "UPDATE products SET code=?, name=?, amount=?, price=?, thumbnail=? WHERE id=?";

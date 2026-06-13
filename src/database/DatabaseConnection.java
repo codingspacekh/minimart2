@@ -40,11 +40,33 @@ public class DatabaseConnection {
             """;
         String createSeq = "CREATE TABLE IF NOT EXISTS product_code_seq (last_num INTEGER NOT NULL DEFAULT 0);";
         String seedSeq   = "INSERT INTO product_code_seq (last_num) SELECT COUNT(*) FROM products WHERE NOT EXISTS (SELECT 1 FROM product_code_seq);";
+        String createOrders = """
+            CREATE TABLE IF NOT EXISTS orders (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                cashier_id TEXT    NOT NULL,
+                total      REAL    NOT NULL DEFAULT 0.0,
+                created_at TEXT    NOT NULL DEFAULT (datetime('now'))
+            );
+        """;
+        String createOrderItems = """
+            CREATE TABLE IF NOT EXISTS order_items (
+                id           INTEGER PRIMARY KEY AUTOINCREMENT,
+                order_id     INTEGER NOT NULL,
+                product_code TEXT    NOT NULL,
+                product_name TEXT    NOT NULL,
+                amount       INTEGER NOT NULL,
+                unit_price   REAL    NOT NULL,
+                subtotal     REAL    NOT NULL,
+                FOREIGN KEY (order_id) REFERENCES orders(id)
+            );
+        """;
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(createProducts);
             stmt.execute(createUsers);
             stmt.execute(createSeq);
             stmt.execute(seedSeq);
+            stmt.execute(createOrders);
+            stmt.execute(createOrderItems);
             System.out.println("Database tables ready.");
         }
         seedUsers(conn);

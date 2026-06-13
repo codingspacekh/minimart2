@@ -180,10 +180,28 @@ public class SignInScreen extends JFrame {
         return btn;
     }
 
-    // TODO
     private void attemptSignIn() {
+        String userId = getFieldValue(userIdField, "Enter your user ID");
+        String name   = getFieldValue(nameField, "Enter your name");
+
+        if (userId.isEmpty() || name.isEmpty()) {
+            errorLabel.setText("Please enter your user ID and name.");
+            return;
+        }
+
+        User user = userDAO.findUser(userId, name);
+        if (user == null) {
+            errorLabel.setText("Invalid user ID or name.");
+            return;
+        }
+
+        errorLabel.setText(" ");
         dispose();
-        new HappyMartApp();
+        if ("cashier".equalsIgnoreCase(user.getRole())) {
+            new OrderScreen(user);
+        } else {
+            new HappyMartApp();
+        }
     }
 
     public static void main(String[] args) {
