@@ -199,13 +199,18 @@ public class SignInScreen extends JFrame {
             return;
         }
 
-        if (!"admin".equals(user.getRole())) {
-            errorLabel.setText("Access denied!! Admin accounts only!");
-            return;
+        errorLabel.setText(" ");
+        dispose();
+        if ("cashier".equalsIgnoreCase(user.getRole())) {
+//            errorLabel.setText("Access denied!! Admin accounts only!");
+//            return;
+            new OrderScreen(user);
+        } else {
+            new HappyMartApp();
         }
 
-        dispose();
-        new HappyMartApp();
+
+
     }
 
     public static void main(String[] args) {
