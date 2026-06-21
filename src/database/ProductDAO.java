@@ -77,6 +77,30 @@ public class ProductDAO {
         return null;
     }
 
+    public Product getProductByCode(String code) {
+        String sql = "SELECT id, code, name, amount, price, thumbnail FROM products WHERE code = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+//            pstmt.setInt(1, code);
+            pstmt.setString(1, code);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new Product(
+                        rs.getInt("id"),
+                        rs.getString("code"),
+                        rs.getString("name"),
+                        rs.getInt("amount"),
+                        rs.getDouble("price"),
+                        rs.getBytes("thumbnail")
+                );
+            }
+        } catch (SQLException e) {
+            System.err.println("Fetch by ID error: " + e.getMessage());
+        }
+        return null;
+    }
+
     // ─── UPDATE ────────────────────────────────────────────────────────────────
     public boolean updateProduct(Product product) {
         String sql = "UPDATE products SET code=?, name=?, amount=?, price=?, thumbnail=? WHERE id=?";
